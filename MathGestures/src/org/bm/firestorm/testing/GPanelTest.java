@@ -11,15 +11,46 @@
 
 package org.bm.firestorm.testing;
 
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import javax.swing.table.DefaultTableModel;
+import org.bm.firestorm.functionspace.FunctionUtils;
+import org.bm.firestorm.functionspace.ONLegendre;
+import org.bm.firestorm.gestures.ParametricPathPanel;
+import org.bm.firestorm.gestures.PolyReader;
+
 /**
  *
  * @author elisha
  */
 public class GPanelTest extends javax.swing.JFrame {
 
+    final PolyReader pr = new PolyReader();
+    final ONLegendre onl = new ONLegendre();
+
     /** Creates new form GPanelTest */
     public GPanelTest() {
         initComponents();
+        gPanel1.addChangeListener(new ChangeListener(){
+            public void stateChanged(ChangeEvent e) {
+                double[][] coeffs = pr.convertPath(gPanel1.getLastPath());
+
+                jSplitPane2.setTopComponent(
+                new ParametricPathPanel(
+                        new FunctionUtils.CFunction(onl, coeffs[0]),
+                        new FunctionUtils.CFunction(onl, coeffs[1])
+                        ));
+                jSplitPane1.validate();
+
+                Object[][] data = new Object[coeffs[0].length][coeffs.length];
+                for (int i = 0; i < coeffs.length; i++) {
+                    for (int j = 0; j < coeffs[0].length; j++) {
+                        data[j][i] = (Double) coeffs[i][j];
+                    }
+                }
+                jTable1.setModel(new DefaultTableModel(data, new String[]{"x", "y"}));
+            }
+        });
     }
 
     /** This method is called from within the constructor to
@@ -31,30 +62,58 @@ public class GPanelTest extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jSplitPane1 = new javax.swing.JSplitPane();
         gPanel1 = new org.bm.firestorm.gestures.GPanel();
+        jSplitPane2 = new javax.swing.JSplitPane();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jTable1 = new javax.swing.JTable();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+
+        jSplitPane1.setResizeWeight(0.5);
 
         org.jdesktop.layout.GroupLayout gPanel1Layout = new org.jdesktop.layout.GroupLayout(gPanel1);
         gPanel1.setLayout(gPanel1Layout);
         gPanel1Layout.setHorizontalGroup(
             gPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 400, Short.MAX_VALUE)
+            .add(0, 297, Short.MAX_VALUE)
         );
         gPanel1Layout.setVerticalGroup(
             gPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 300, Short.MAX_VALUE)
+            .add(0, 448, Short.MAX_VALUE)
         );
+
+        jSplitPane1.setLeftComponent(gPanel1);
+
+        jSplitPane2.setOrientation(javax.swing.JSplitPane.VERTICAL_SPLIT);
+        jSplitPane2.setResizeWeight(0.5);
+
+        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        jScrollPane1.setViewportView(jTable1);
+
+        jSplitPane2.setBottomComponent(jScrollPane1);
+
+        jSplitPane1.setRightComponent(jSplitPane2);
 
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(gPanel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .add(jSplitPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 781, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(gPanel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .add(jSplitPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 450, Short.MAX_VALUE)
         );
 
         pack();
@@ -73,6 +132,10 @@ public class GPanelTest extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private org.bm.firestorm.gestures.GPanel gPanel1;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JSplitPane jSplitPane1;
+    private javax.swing.JSplitPane jSplitPane2;
+    private javax.swing.JTable jTable1;
     // End of variables declaration//GEN-END:variables
 
 }
