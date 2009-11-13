@@ -67,6 +67,7 @@ public class GPanelTest extends javax.swing.JFrame {
         jSplitPane2 = new javax.swing.JSplitPane();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
+        parametricPathPanel1 = new org.bm.firestorm.gestures.ParametricPathPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -76,7 +77,7 @@ public class GPanelTest extends javax.swing.JFrame {
         gPanel1.setLayout(gPanel1Layout);
         gPanel1Layout.setHorizontalGroup(
             gPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 297, Short.MAX_VALUE)
+            .add(0, 308, Short.MAX_VALUE)
         );
         gPanel1Layout.setVerticalGroup(
             gPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
@@ -102,6 +103,19 @@ public class GPanelTest extends javax.swing.JFrame {
         jScrollPane1.setViewportView(jTable1);
 
         jSplitPane2.setBottomComponent(jScrollPane1);
+
+        org.jdesktop.layout.GroupLayout parametricPathPanel1Layout = new org.jdesktop.layout.GroupLayout(parametricPathPanel1);
+        parametricPathPanel1.setLayout(parametricPathPanel1Layout);
+        parametricPathPanel1Layout.setHorizontalGroup(
+            parametricPathPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(0, 464, Short.MAX_VALUE)
+        );
+        parametricPathPanel1Layout.setVerticalGroup(
+            parametricPathPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(0, 207, Short.MAX_VALUE)
+        );
+
+        jSplitPane2.setLeftComponent(parametricPathPanel1);
 
         jSplitPane1.setRightComponent(jSplitPane2);
 
@@ -136,6 +150,7 @@ public class GPanelTest extends javax.swing.JFrame {
     private javax.swing.JSplitPane jSplitPane1;
     private javax.swing.JSplitPane jSplitPane2;
     private javax.swing.JTable jTable1;
+    private org.bm.firestorm.gestures.ParametricPathPanel parametricPathPanel1;
     // End of variables declaration//GEN-END:variables
 
 }

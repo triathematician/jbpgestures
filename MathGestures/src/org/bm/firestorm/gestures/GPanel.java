@@ -82,11 +82,17 @@ public class GPanel extends JPanel implements ActionListener, MouseInputListener
         this.cachedPaths = paths;
     }
 
-    public int getMaxPaths() {
+    public void clearAllPaths() {
+        cachedPaths.clear();
+        lastPath = new GeneralPath();
+        repaint();
+    }
+
+    public int getMaxNumberOfPaths() {
         return cacheSize;
     }
 
-    public void setMaxPaths(int maxPaths) {
+    public void setMaxNumberOfPaths(int maxPaths) {
         this.cacheSize = maxPaths;
     }
 
@@ -127,7 +133,7 @@ public class GPanel extends JPanel implements ActionListener, MouseInputListener
             cachePath();
         }
         if (command.equals("CLEAR")) {
-            cachedPaths = new ArrayList<GeneralPath>();
+            clearAllPaths();
         }
     }
 

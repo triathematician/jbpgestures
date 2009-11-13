@@ -10,6 +10,7 @@ import java.awt.Graphics2D;
 import org.bm.firestorm.functionspace.Function;
 import java.awt.geom.GeneralPath;
 import javax.swing.JPanel;
+import org.bm.firestorm.functionspace.FunctionUtils.CFunction;
 
 /**
  * <p>
@@ -43,6 +44,9 @@ public class ParametricPathPanel extends JPanel {
     //
     //
 
+    public ParametricPathPanel() {
+    }
+
     public ParametricPathPanel(Function fx, Function fy) {
         this.fx = fx;
         this.fy = fy;
@@ -68,6 +72,11 @@ public class ParametricPathPanel extends JPanel {
 
     public void setFY(Function fy) {
         this.fy = fy;
+    }
+
+    public void setFunctions(Function fx, Function fy) {
+        setFX(fx);
+        setFY(fy);
     }
 
     public double[] getRange() {
@@ -110,8 +119,10 @@ public class ParametricPathPanel extends JPanel {
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-        recompute();
-        if (path != null)
-            ((Graphics2D)g).draw(path);
+        if (fx != null && fy != null) {
+            recompute();
+            if (path != null)
+                ((Graphics2D)g).draw(path);
+        }
     }
 }
