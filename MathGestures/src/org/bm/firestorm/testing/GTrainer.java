@@ -13,6 +13,7 @@ package org.bm.firestorm.testing;
 
 import java.util.NoSuchElementException;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.JTable;
 import org.bm.firestorm.functionspace.FunctionUtils;
 import org.bm.firestorm.functionspace.ONLegendre;
 import org.bm.firestorm.gestures.PolyReader;
@@ -31,6 +32,7 @@ public class GTrainer extends javax.swing.JFrame {
     /** Creates new form GTrainer */
     public GTrainer() {
         initComponents();
+        gestureTable.setModel(trainedGestures.getTableModel());
     }
 
     /** This method is called from within the constructor to
@@ -42,8 +44,6 @@ public class GTrainer extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jScrollPane1 = new javax.swing.JScrollPane();
-        gestureTable = new javax.swing.JTable();
         trainedGestures = new org.bm.firestorm.gestures.data.CoefficientClassifier<String>();
         reader = new org.bm.firestorm.gestures.PolyReader();
         jToolBar1 = new javax.swing.JToolBar();
@@ -54,7 +54,7 @@ public class GTrainer extends javax.swing.JFrame {
         jPanel1 = new javax.swing.JPanel();
         trainingPanel = new org.bm.firestorm.gestures.GPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
-        jTable2 = new javax.swing.JTable();
+        gestureTable = new javax.swing.JTable();
         reflectPanel = new org.bm.firestorm.gestures.ParametricPathPanel();
         acceptButton = new javax.swing.JButton();
         rejectButton = new javax.swing.JButton();
@@ -62,25 +62,13 @@ public class GTrainer extends javax.swing.JFrame {
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
         lookupString = new javax.swing.JLabel();
-        distLabel = new javax.swing.JLabel();
+        lookupDist = new javax.swing.JLabel();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         jMenu2 = new javax.swing.JMenu();
 
-        gestureTable.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
-            },
-            new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
-            }
-        ));
-        jScrollPane1.setViewportView(gestureTable);
-
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Gesture Training");
 
         jToolBar1.setRollover(true);
 
@@ -103,6 +91,7 @@ public class GTrainer extends javax.swing.JFrame {
         getContentPane().add(jToolBar1, java.awt.BorderLayout.NORTH);
 
         trainingPanel.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0), 2, true));
+        trainingPanel.setMaxNumberOfPaths(3);
         trainingPanel.setMaximumSize(new java.awt.Dimension(200, 200));
         trainingPanel.setMinimumSize(new java.awt.Dimension(200, 200));
         trainingPanel.setPreferredSize(new java.awt.Dimension(200, 200));
@@ -123,7 +112,7 @@ public class GTrainer extends javax.swing.JFrame {
             .add(0, 196, Short.MAX_VALUE)
         );
 
-        jTable2.setModel(new javax.swing.table.DefaultTableModel(
+        gestureTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
                 {null, null, null, null},
@@ -134,7 +123,7 @@ public class GTrainer extends javax.swing.JFrame {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
-        jScrollPane2.setViewportView(jTable2);
+        jScrollPane2.setViewportView(gestureTable);
 
         reflectPanel.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(102, 102, 102)));
         reflectPanel.setMaximumSize(new java.awt.Dimension(100, 100));
@@ -189,11 +178,11 @@ public class GTrainer extends javax.swing.JFrame {
         jLabel4.setForeground(new java.awt.Color(102, 102, 102));
         jLabel4.setText("Closest Gesture:");
 
-        lookupString.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
+        lookupString.setFont(new java.awt.Font("Tahoma", 1, 18));
         lookupString.setForeground(new java.awt.Color(204, 0, 51));
         lookupString.setText("NONE");
 
-        distLabel.setText("dist=0.0");
+        lookupDist.setText("dist=0.0");
 
         org.jdesktop.layout.GroupLayout jPanel1Layout = new org.jdesktop.layout.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -211,7 +200,7 @@ public class GTrainer extends javax.swing.JFrame {
                                 .add(org.jdesktop.layout.GroupLayout.TRAILING, acceptButton, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .add(org.jdesktop.layout.GroupLayout.TRAILING, jLabel3))
                             .add(jLabel4)
-                            .add(distLabel))
+                            .add(lookupDist))
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                             .add(lookupPanel, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
@@ -245,7 +234,7 @@ public class GTrainer extends javax.swing.JFrame {
                                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                                 .add(lookupString)
                                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                                .add(distLabel)))))
+                                .add(lookupDist)))))
                 .addContainerGap())
         );
 
@@ -270,6 +259,7 @@ public class GTrainer extends javax.swing.JFrame {
         double[][] coeffs = reader.convertPath(trainingPanel.getLastPath());
         trainedGestures.put(context(), coeffs, trainString.getText());
         trainingPanel.clearAllPaths();
+        gestureTable.setModel(trainedGestures.getTableModel());
     }//GEN-LAST:event_acceptButtonActionPerformed
 
     private void trainStringActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_trainStringActionPerformed
@@ -285,9 +275,11 @@ public class GTrainer extends javax.swing.JFrame {
         reflectPanel.setFunctions(new FunctionUtils.CFunction(onl, coeffs[0]), new FunctionUtils.CFunction(onl, coeffs[1]));
         reflectPanel.repaint();
         try {
-            TrainGesture gesture = (TrainGesture) trainedGestures.sortDatabase(context(), coeffs).first();
-            lookupString.setText( (String) trainedGestures.get(gesture));
-            lookupPanel.setFunctions(new FunctionUtils.CFunction(onl, gesture.getArrays()[0]), new FunctionUtils.CFunction(onl, gesture.getArrays()[1]));
+            TrainGesture tg = new TrainGesture(context(), coeffs);
+            TrainGesture best = trainedGestures.closestTo(tg);
+            lookupString.setText( (String) trainedGestures.get(best));
+            lookupDist.setText( String.format("%.2f", best.distance(tg)) );
+            lookupPanel.setFunctions(new FunctionUtils.CFunction(onl, best.getArrays()[0]), new FunctionUtils.CFunction(onl, best.getArrays()[1]));
             lookupPanel.repaint();
         } catch (NoSuchElementException e) {
         }
@@ -307,7 +299,6 @@ public class GTrainer extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton acceptButton;
     private javax.swing.JComboBox contextBox;
-    private javax.swing.JLabel distLabel;
     private javax.swing.JTable gestureTable;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
@@ -317,10 +308,9 @@ public class GTrainer extends javax.swing.JFrame {
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JTable jTable2;
     private javax.swing.JToolBar jToolBar1;
+    private javax.swing.JLabel lookupDist;
     private org.bm.firestorm.gestures.ParametricPathPanel lookupPanel;
     private javax.swing.JLabel lookupString;
     private org.bm.firestorm.gestures.PolyReader reader;

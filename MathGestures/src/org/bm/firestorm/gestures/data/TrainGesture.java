@@ -14,7 +14,7 @@ import org.bm.firestorm.functionspace.VectorUtils;
  * </p>
  * @author Elisha Peterson
  */
-public class TrainGesture {
+public class TrainGesture implements Comparable<TrainGesture> {
     /** Stores context of the gesture. */
     TrainContext context = TrainContext.NONE;
     /** Stores arrays of the gesture. First array is x coords, second is y coords. */
@@ -35,7 +35,7 @@ public class TrainGesture {
      */
     public TrainGesture(TrainContext context, double[][] arrays) {
         this.context = context;
-        this.arrays = arrays;
+        setArrays(arrays);
     }
 
     //
@@ -69,19 +69,24 @@ public class TrainGesture {
      *
      */
     public double distance(TrainGesture gesture) {
+        // TODO - work this better! here we are eliminating the first variable completely.
         double totDist = 0;
         for (int i = 0; i < Math.min(arrays.length, gesture.arrays.length); i++) {
-            totDist += VectorUtils.distance(arrays[i], gesture.arrays[i]);
+            totDist += VectorUtils.normDistance(arrays[i], gesture.arrays[i], 1);
         }
         if (arrays.length > gesture.arrays.length) {
             for (int i = gesture.arrays.length; i < arrays.length; i++) {
-                totDist += VectorUtils.magnitude(arrays[i]);
+                totDist += VectorUtils.magnitude(arrays[i], 1);
             }
         } else if (gesture.arrays.length > arrays.length) {
             for (int i = arrays.length; i < gesture.arrays.length; i++) {
-                totDist += VectorUtils.magnitude(gesture.arrays[i]);
+                totDist += VectorUtils.magnitude(gesture.arrays[i], 1);
             }            
         }   
         return totDist;
+    }
+
+    public int compareTo(TrainGesture o) {
+        return (int) Math.signum(arrays[0][0] - o.arrays[0][0]);
     }
 }

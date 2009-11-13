@@ -17,7 +17,8 @@ public enum TrainContext {
     CURRENCY ("Currency"),
     WEB ("Web"),
     SYMBOLS ("Symbols"),
-    MATH ("Math");
+    MATH ("Math"),
+    SHAPES ("Shapes");
 
     String name;
 

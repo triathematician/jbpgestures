@@ -5,13 +5,19 @@
 
 package org.bm.firestorm.gestures.data;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.SortedSet;
+import java.util.TreeMap;
 import java.util.TreeSet;
+import java.util.Vector;
+import javax.swing.table.AbstractTableModel;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
 
 /**
  * <p>
@@ -22,10 +28,10 @@ import java.util.TreeSet;
 public class CoefficientClassifier<T> {
 
     /** Mapping from coefficient arrays to objects. */
-    public Map<TrainGesture, T> database;
+    public TreeMap<TrainGesture, T> database;
 
     public CoefficientClassifier() {
-        database = new HashMap<TrainGesture, T>();
+        database = new TreeMap<TrainGesture, T>();
     }
 
     //
@@ -77,7 +83,7 @@ public class CoefficientClassifier<T> {
      * in order by the distance from a specified input gesture.
      * @param gesture the gesture to be sorted by
      */
-    public static Comparator<TrainGesture> getComparator(final TrainGesture gesture) {
+    public static Comparator<TrainGesture> gComparator(final TrainGesture gesture) {
         return new Comparator<TrainGesture>(){
             public int compare(TrainGesture o1, TrainGesture o2) {
                 return (int) Math.signum( o1.distance(gesture) - o2.distance(gesture) );
@@ -93,7 +99,7 @@ public class CoefficientClassifier<T> {
      *   well as the distances these are from the input gesture
      */
     public SortedSet<TrainGesture> sortDatabase(TrainGesture gesture) {
-        SortedSet<TrainGesture> result = new TreeSet<TrainGesture>(getComparator(gesture));
+        SortedSet<TrainGesture> result = new TreeSet<TrainGesture>(gComparator(gesture));
         result.addAll(database.keySet());
         return result;
     }
@@ -114,9 +120,8 @@ public class CoefficientClassifier<T> {
      * Returns value in database most closely associated to the provided gesture.
      * @param gesture gesture to classify
      */
-    public T getBestValue(TrainGesture gesture) {
-        SortedSet<TrainGesture> data = sortDatabase(gesture);
-        return database.get(data.last());
+    public TrainGesture closestTo(TrainGesture gesture) {
+        return Collections.min(database.keySet(), gComparator(gesture));
     }
 
     /**
@@ -124,9 +129,23 @@ public class CoefficientClassifier<T> {
      * @param context the context
      * @param coeffs the coefficients
      */
-    public T getBestValue(TrainContext context, double[][] coeffs) {
-        SortedSet<TrainGesture> data = sortDatabase(new TrainGesture(context, coeffs));
-        return database.get(data.last());
+    public TrainGesture closestTo(TrainContext context, double[][] coeffs) {
+        return Collections.min(database.keySet(), gComparator(new TrainGesture(context, coeffs)));
     }
-    
+
+    //
+    // TABLE METHODS
+    //
+
+    public static final Object[] HEADER = new Object[]{"Value", "Context", "Coefficients"};
+
+    public TableModel getTableModel() {
+        final Object[][] rowData = new Object[database.size()][3];
+        int i = 0;
+        for (Entry<TrainGesture,T> en : database.entrySet()) {
+            rowData[i] = new Object[] { en.getValue(), en.getKey().context, Arrays.deepToString(en.getKey().arrays) };
+            i++;
+        }
+        return new DefaultTableModel(rowData, HEADER);
+    }
 }

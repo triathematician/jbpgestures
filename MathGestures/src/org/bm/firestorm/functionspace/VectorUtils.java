@@ -11,6 +11,18 @@ package org.bm.firestorm.functionspace;
  */
 public class VectorUtils {
 
+    /** Chops off front part of array. */
+    public static double[] subArr(double[] arr, int start) {
+        if (arr.length <= start) {
+            return new double[]{};
+        }
+        double[] result = new double[arr.length - start];
+        for (int i = start; i < result.length; i++) {
+            result[i - start] = arr[i];
+        }
+        return result;
+    }
+
     /** Computes magnitude of an arbitrary length vector */
     public static double magnitude(double[] vec) {
         double tot = 0;
@@ -20,6 +32,11 @@ public class VectorUtils {
         return Math.sqrt(tot);
     }
 
+    /** Computes magnitude of an arbitrary length vector */
+    public static double magnitude(double[] vec, int start) {
+        return magnitude(subArr(vec, start));
+    }
+
     /** Computes cos of angle between two vectors; okay for vectors to have different lengths. */
     public static double cosTheta(double[] co1, double[] co2) {
         double tot = 0;
@@ -27,6 +44,14 @@ public class VectorUtils {
             tot += co1[i] * co2[i];
         }
         return tot / magnitude(co1) / magnitude(co2);
+    }
+
+    /**
+     * Computes the distance between two vectors, after normalizing them.
+     * Okay for them to have different lengths.
+     */
+    public static double normDistance(double[] co1, double[] co2, int start) {
+        return normDistance(subArr(co1, start), subArr(co2, start));
     }
 
     /**
