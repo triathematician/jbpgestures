@@ -44,9 +44,9 @@ public class PathUtils {
         if (curPath != null) {
             result.add(curPath.toArray(new Point2D.Double[]{}));
         }
-        for (Point2D.Double[] sp : result) {
-            System.out.println("subPath: " + Arrays.toString(sp));
-        }
+//        for (Point2D.Double[] sp : result) {
+//            System.out.println("subPath: " + Arrays.toString(sp));
+//        }
         return result;
     }
 

@@ -22,7 +22,7 @@ import java.util.List;
  * @author Elisha Peterson
  */
 public class PolyReader implements PathReader {
-    final static int DEGREE = 12;
+    final static int DEGREE = 15;
 
     public double[][] convertPath(GeneralPath path) {
         ONLegendre l = new ONLegendre();
@@ -32,14 +32,12 @@ public class PolyReader implements PathReader {
             PathUtils.IFunc pfunc = new PathUtils.IFunc(p);
             result[0] = FunctionUtils.getCoefficients(pfunc.xFunc, l, DEGREE);
             result[1] = FunctionUtils.getCoefficients(pfunc.yFunc, l, DEGREE);
-            System.out.println("plot[List" + Arrays.toString(result[0])+",List"+ Arrays.toString(result[1])+"]");
-
-            System.out.println(" diffx = " + Arrays.toString(diffPolys(result[0], DEGREE)));
-            int orderx = diffArray(diffPolys(result[0],10));
-            System.out.println(" diffy = " + Arrays.toString(diffPolys(result[1], DEGREE)));
-            int ordery = diffArray(diffPolys(result[1],10));
-
-            System.out.println(tryToClassify(orderx, ordery));
+//            System.out.println("plot[List" + Arrays.toString(result[0])+",List"+ Arrays.toString(result[1])+"]");
+//            System.out.println(" diffx = " + Arrays.toString(diffPolys(result[0], DEGREE)));
+//            int orderx = diffArray(diffPolys(result[0],10));
+//            System.out.println(" diffy = " + Arrays.toString(diffPolys(result[1], DEGREE)));
+//            int ordery = diffArray(diffPolys(result[1],10));
+//            System.out.println(tryToClassify(orderx, ordery));
         }
         return result;
     }

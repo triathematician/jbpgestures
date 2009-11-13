@@ -73,14 +73,17 @@ public class TrainGesture implements Comparable<TrainGesture> {
         double totDist = 0;
         for (int i = 0; i < Math.min(arrays.length, gesture.arrays.length); i++) {
             totDist += VectorUtils.normDistance(arrays[i], gesture.arrays[i], 1);
+            totDist += 1 - Math.pow(VectorUtils.cosTheta(arrays[i], gesture.arrays[i], 1), 2);
         }
         if (arrays.length > gesture.arrays.length) {
             for (int i = gesture.arrays.length; i < arrays.length; i++) {
                 totDist += VectorUtils.magnitude(arrays[i], 1);
+                totDist += 1;
             }
         } else if (gesture.arrays.length > arrays.length) {
             for (int i = arrays.length; i < gesture.arrays.length; i++) {
                 totDist += VectorUtils.magnitude(gesture.arrays[i], 1);
+                totDist += 1;
             }            
         }   
         return totDist;

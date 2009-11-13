@@ -46,6 +46,11 @@ public class VectorUtils {
         return tot / magnitude(co1) / magnitude(co2);
     }
 
+    /** Computes cos of angle between two vectors; okay for vectors to have different lengths. */
+    public static double cosTheta(double[] co1, double[] co2, int start) {
+        return cosTheta(subArr(co1, start), subArr(co2, start));
+    }
+
     /**
      * Computes the distance between two vectors, after normalizing them.
      * Okay for them to have different lengths.

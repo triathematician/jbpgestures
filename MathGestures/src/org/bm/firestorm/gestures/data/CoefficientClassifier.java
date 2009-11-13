@@ -8,14 +8,11 @@ package org.bm.firestorm.gestures.data;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeMap;
 import java.util.TreeSet;
-import java.util.Vector;
-import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 
@@ -25,7 +22,7 @@ import javax.swing.table.TableModel;
  * </p>
  * @author Elisha Peterson
  */
-public class CoefficientClassifier<T> {
+public class CoefficientClassifier<T> implements java.io.Serializable {
 
     /** Mapping from coefficient arrays to objects. */
     public TreeMap<TrainGesture, T> database;

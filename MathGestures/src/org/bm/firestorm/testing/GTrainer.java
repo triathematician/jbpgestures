@@ -277,7 +277,8 @@ public class GTrainer extends javax.swing.JFrame {
         try {
             TrainGesture tg = new TrainGesture(context(), coeffs);
             TrainGesture best = trainedGestures.closestTo(tg);
-            lookupString.setText( (String) trainedGestures.get(best));
+            lookupString.setText( (String) trainedGestures.get(best) );
+            System.out.println( (String) trainedGestures.get(best) );
             lookupDist.setText( String.format("%.2f", best.distance(tg)) );
             lookupPanel.setFunctions(new FunctionUtils.CFunction(onl, best.getArrays()[0]), new FunctionUtils.CFunction(onl, best.getArrays()[1]));
             lookupPanel.repaint();
