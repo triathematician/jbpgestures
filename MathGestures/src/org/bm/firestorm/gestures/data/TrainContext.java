@@ -9,7 +9,7 @@ package org.bm.firestorm.gestures.data;
  *
  * @author ae3263
  */
-public enum TrainContext {
+public enum TrainContext implements java.io.Serializable {
     NONE ("No Context"),
     NUMBERS ("Number"),
     LOWERCASE ("Lowercase"),

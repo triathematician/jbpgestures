@@ -67,6 +67,14 @@ public class CoefficientClassifier<T> implements java.io.Serializable {
         return database.entrySet();
     }
 
+    public TreeMap<TrainGesture, T> getDatabase() {
+        return database;
+    }
+
+    public void setDatabase(TreeMap<TrainGesture, T> database) {
+        this.database = database;
+    }
+
     public void clear() {
         database.clear();
     }

@@ -11,12 +11,24 @@
 
 package org.bm.firestorm.testing;
 
+import java.beans.XMLDecoder;
+import java.beans.XMLEncoder;
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.util.NoSuchElementException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
-import javax.swing.JTable;
+import javax.swing.JFileChooser;
+import javax.swing.filechooser.FileFilter;
 import org.bm.firestorm.functionspace.FunctionUtils;
 import org.bm.firestorm.functionspace.ONLegendre;
 import org.bm.firestorm.gestures.PolyReader;
+import org.bm.firestorm.gestures.data.CoefficientClassifier;
 import org.bm.firestorm.gestures.data.TrainContext;
 import org.bm.firestorm.gestures.data.TrainGesture;
 
@@ -28,6 +40,34 @@ public class GTrainer extends javax.swing.JFrame {
 
     final PolyReader pr = new PolyReader();
     final ONLegendre onl = new ONLegendre();
+
+    final JFileChooser fc = new JFileChooser();
+    File openFile = null;
+
+    /*
+     * Get the extension of a file.
+     */
+    public static String getExtension(File f) {
+        String ext = null;
+        String s = f.getName();
+        int i = s.lastIndexOf('.');
+
+        if (i > 0 &&  i < s.length() - 1) {
+            ext = s.substring(i+1).toLowerCase();
+        }
+        return ext;
+    }
+
+    final static FileFilter xmlFilter = new FileFilter(){
+        public boolean accept(File pathname) {
+            return pathname != null && (pathname.isDirectory() || getExtension(pathname).equals("xml"));
+        }
+
+        @Override
+        public String getDescription() {
+            return "XML files";
+        }
+    };
 
     /** Creates new form GTrainer */
     public GTrainer() {
@@ -47,39 +87,43 @@ public class GTrainer extends javax.swing.JFrame {
         trainedGestures = new org.bm.firestorm.gestures.data.CoefficientClassifier<String>();
         reader = new org.bm.firestorm.gestures.PolyReader();
         jToolBar1 = new javax.swing.JToolBar();
-        jLabel1 = new javax.swing.JLabel();
+        contextLabel = new javax.swing.JLabel();
         contextBox = new javax.swing.JComboBox();
-        jLabel2 = new javax.swing.JLabel();
+        trainStringLabel = new javax.swing.JLabel();
         trainString = new javax.swing.JTextField();
-        jPanel1 = new javax.swing.JPanel();
+        mainPanel = new javax.swing.JPanel();
         trainingPanel = new org.bm.firestorm.gestures.GPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
         gestureTable = new javax.swing.JTable();
         reflectPanel = new org.bm.firestorm.gestures.ParametricPathPanel();
         acceptButton = new javax.swing.JButton();
         rejectButton = new javax.swing.JButton();
-        lookupPanel = new org.bm.firestorm.gestures.ParametricPathPanel();
-        jLabel3 = new javax.swing.JLabel();
-        jLabel4 = new javax.swing.JLabel();
-        lookupString = new javax.swing.JLabel();
-        lookupDist = new javax.swing.JLabel();
+        lookupGesturePanel = new org.bm.firestorm.gestures.ParametricPathPanel();
+        storedLabel = new javax.swing.JLabel();
+        closestLabel = new javax.swing.JLabel();
+        lookupStringLabel = new javax.swing.JLabel();
+        lookupDistLabel = new javax.swing.JLabel();
         jMenuBar1 = new javax.swing.JMenuBar();
-        jMenu1 = new javax.swing.JMenu();
-        jMenu2 = new javax.swing.JMenu();
+        fileMenu = new javax.swing.JMenu();
+        openMenuItem = new javax.swing.JMenuItem();
+        saveMenuItem = new javax.swing.JMenuItem();
+        saveAsMenuItem = new javax.swing.JMenuItem();
+        jSeparator1 = new javax.swing.JSeparator();
+        exitMenuItem = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Gesture Training");
 
         jToolBar1.setRollover(true);
 
-        jLabel1.setText("Context:");
-        jToolBar1.add(jLabel1);
+        contextLabel.setText("Context:");
+        jToolBar1.add(contextLabel);
 
         contextBox.setModel(new DefaultComboBoxModel(TrainContext.values()));
         jToolBar1.add(contextBox);
 
-        jLabel2.setText("  String:");
-        jToolBar1.add(jLabel2);
+        trainStringLabel.setText("  String:");
+        jToolBar1.add(trainStringLabel);
 
         trainString.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -159,92 +203,126 @@ public class GTrainer extends javax.swing.JFrame {
             }
         });
 
-        lookupPanel.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
-        lookupPanel.setMaximumSize(new java.awt.Dimension(100, 100));
+        lookupGesturePanel.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
+        lookupGesturePanel.setMaximumSize(new java.awt.Dimension(100, 100));
 
-        org.jdesktop.layout.GroupLayout lookupPanelLayout = new org.jdesktop.layout.GroupLayout(lookupPanel);
-        lookupPanel.setLayout(lookupPanelLayout);
-        lookupPanelLayout.setHorizontalGroup(
-            lookupPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+        org.jdesktop.layout.GroupLayout lookupGesturePanelLayout = new org.jdesktop.layout.GroupLayout(lookupGesturePanel);
+        lookupGesturePanel.setLayout(lookupGesturePanelLayout);
+        lookupGesturePanelLayout.setHorizontalGroup(
+            lookupGesturePanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(0, 100, Short.MAX_VALUE)
         );
-        lookupPanelLayout.setVerticalGroup(
-            lookupPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+        lookupGesturePanelLayout.setVerticalGroup(
+            lookupGesturePanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(0, 100, Short.MAX_VALUE)
         );
 
-        jLabel3.setText("Stored Gesture:");
+        storedLabel.setText("Stored Gesture:");
 
-        jLabel4.setForeground(new java.awt.Color(102, 102, 102));
-        jLabel4.setText("Closest Gesture:");
+        closestLabel.setForeground(new java.awt.Color(102, 102, 102));
+        closestLabel.setText("Closest Gesture:");
 
-        lookupString.setFont(new java.awt.Font("Tahoma", 1, 18));
-        lookupString.setForeground(new java.awt.Color(204, 0, 51));
-        lookupString.setText("NONE");
+        lookupStringLabel.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
+        lookupStringLabel.setForeground(new java.awt.Color(204, 0, 51));
+        lookupStringLabel.setText("NONE");
 
-        lookupDist.setText("dist=0.0");
+        lookupDistLabel.setText("dist=0.0");
 
-        org.jdesktop.layout.GroupLayout jPanel1Layout = new org.jdesktop.layout.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(jPanel1Layout.createSequentialGroup()
+        org.jdesktop.layout.GroupLayout mainPanelLayout = new org.jdesktop.layout.GroupLayout(mainPanel);
+        mainPanel.setLayout(mainPanelLayout);
+        mainPanelLayout.setHorizontalGroup(
+            mainPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(mainPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .add(jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
+                .add(mainPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
                     .add(trainingPanel, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                    .add(jPanel1Layout.createSequentialGroup()
-                        .add(jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
-                            .add(lookupString)
-                            .add(jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING, false)
+                    .add(mainPanelLayout.createSequentialGroup()
+                        .add(mainPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
+                            .add(lookupStringLabel)
+                            .add(mainPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING, false)
                                 .add(rejectButton, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .add(org.jdesktop.layout.GroupLayout.TRAILING, acceptButton, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .add(org.jdesktop.layout.GroupLayout.TRAILING, jLabel3))
-                            .add(jLabel4)
-                            .add(lookupDist))
+                                .add(org.jdesktop.layout.GroupLayout.TRAILING, storedLabel))
+                            .add(closestLabel)
+                            .add(lookupDistLabel))
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                            .add(lookupPanel, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                        .add(mainPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                            .add(lookupGesturePanel, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                             .add(reflectPanel, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))))
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(jScrollPane2)
+                .add(jScrollPane2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 444, Short.MAX_VALUE)
                 .addContainerGap())
         );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(jPanel1Layout.createSequentialGroup()
-                .add(11, 11, 11)
-                .add(jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(jScrollPane2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 416, Short.MAX_VALUE)
-                    .add(jPanel1Layout.createSequentialGroup()
+        mainPanelLayout.setVerticalGroup(
+            mainPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(mainPanelLayout.createSequentialGroup()
+                .add(13, 13, 13)
+                .add(mainPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                    .add(jScrollPane2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 418, Short.MAX_VALUE)
+                    .add(mainPanelLayout.createSequentialGroup()
                         .add(trainingPanel, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                            .add(jPanel1Layout.createSequentialGroup()
-                                .add(jLabel3)
+                        .add(mainPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                            .add(mainPanelLayout.createSequentialGroup()
+                                .add(storedLabel)
                                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                                 .add(acceptButton)
                                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                                 .add(rejectButton))
                             .add(reflectPanel, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                            .add(lookupPanel, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                            .add(jPanel1Layout.createSequentialGroup()
-                                .add(jLabel4)
+                        .add(mainPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                            .add(lookupGesturePanel, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                            .add(mainPanelLayout.createSequentialGroup()
+                                .add(closestLabel)
                                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                                .add(lookupString)
+                                .add(lookupStringLabel)
                                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                                .add(lookupDist)))))
+                                .add(lookupDistLabel)))))
                 .addContainerGap())
         );
 
-        getContentPane().add(jPanel1, java.awt.BorderLayout.CENTER);
+        getContentPane().add(mainPanel, java.awt.BorderLayout.CENTER);
 
-        jMenu1.setText("File");
-        jMenuBar1.add(jMenu1);
+        fileMenu.setText("File");
 
-        jMenu2.setText("Edit");
-        jMenuBar1.add(jMenu2);
+        openMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_O, java.awt.event.InputEvent.CTRL_MASK));
+        openMenuItem.setText("Open Gesture Database");
+        openMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                openMenuItemActionPerformed(evt);
+            }
+        });
+        fileMenu.add(openMenuItem);
+
+        saveMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.CTRL_MASK));
+        saveMenuItem.setText("Save Gesture Database");
+        saveMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                saveMenuItemActionPerformed(evt);
+            }
+        });
+        fileMenu.add(saveMenuItem);
+
+        saveAsMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.ALT_MASK | java.awt.event.InputEvent.CTRL_MASK));
+        saveAsMenuItem.setText("Save Gesture Database as...");
+        saveAsMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                saveAsMenuItemActionPerformed(evt);
+            }
+        });
+        fileMenu.add(saveAsMenuItem);
+        fileMenu.add(jSeparator1);
+
+        exitMenuItem.setText("Exit");
+        exitMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                exitMenuItemActionPerformed(evt);
+            }
+        });
+        fileMenu.add(exitMenuItem);
+
+        jMenuBar1.add(fileMenu);
 
         setJMenuBar(jMenuBar1);
 
@@ -277,14 +355,81 @@ public class GTrainer extends javax.swing.JFrame {
         try {
             TrainGesture tg = new TrainGesture(context(), coeffs);
             TrainGesture best = trainedGestures.closestTo(tg);
-            lookupString.setText( (String) trainedGestures.get(best) );
+            lookupStringLabel.setText( (String) trainedGestures.get(best) );
             System.out.println( (String) trainedGestures.get(best) );
-            lookupDist.setText( String.format("%.2f", best.distance(tg)) );
-            lookupPanel.setFunctions(new FunctionUtils.CFunction(onl, best.getArrays()[0]), new FunctionUtils.CFunction(onl, best.getArrays()[1]));
-            lookupPanel.repaint();
+            lookupDistLabel.setText( String.format("%.2f", best.distance(tg)) );
+            lookupGesturePanel.setFunctions(new FunctionUtils.CFunction(onl, best.getArrays()[0]), new FunctionUtils.CFunction(onl, best.getArrays()[1]));
+            lookupGesturePanel.repaint();
         } catch (NoSuchElementException e) {
         }
     }//GEN-LAST:event_trainingPanelStateChanged
+
+    private void exitMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exitMenuItemActionPerformed
+        System.exit(0);
+    }//GEN-LAST:event_exitMenuItemActionPerformed
+
+    private void openMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_openMenuItemActionPerformed
+        fc.setFileFilter(xmlFilter);
+        if (openFile != null) {
+            fc.setCurrentDirectory(openFile);
+            fc.setSelectedFile(openFile);
+        }
+        int returnVal = fc.showOpenDialog(GTrainer.this);
+        if (returnVal == JFileChooser.APPROVE_OPTION) {
+            openFile = fc.getSelectedFile();
+            System.out.print("Opening: " + openFile.getName() + "...");
+            try {
+                XMLDecoder decoder = new XMLDecoder(new BufferedInputStream(new FileInputStream(openFile)));
+                trainedGestures = (CoefficientClassifier) decoder.readObject();
+                gestureTable.setModel(trainedGestures.getTableModel());
+                decoder.close();
+                System.out.println(" successful.");
+            } catch (FileNotFoundException ex) {
+                Logger.getLogger(GTrainer.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } else {
+            System.out.println(" open command cancelled by user.");
+        }
+    }//GEN-LAST:event_openMenuItemActionPerformed
+
+    private void saveMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveMenuItemActionPerformed
+        if (openFile != null) {
+            System.out.print("Saving: " + openFile.getName() + "...");
+            try {
+                XMLEncoder encoder = new XMLEncoder(new BufferedOutputStream(new FileOutputStream(openFile)));
+                encoder.writeObject(trainedGestures);
+                encoder.close();
+                System.out.println(" successful.");
+            } catch (FileNotFoundException ex) {
+                Logger.getLogger(GTrainer.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } else {
+            saveAsMenuItemActionPerformed(evt);
+        }
+    }//GEN-LAST:event_saveMenuItemActionPerformed
+
+    private void saveAsMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveAsMenuItemActionPerformed
+        fc.setFileFilter(xmlFilter);
+        if (openFile != null) {
+            fc.setCurrentDirectory(openFile);
+            fc.setSelectedFile(openFile);
+        }
+        int returnVal = fc.showSaveDialog(GTrainer.this);
+        if (returnVal == JFileChooser.APPROVE_OPTION) {
+            openFile = fc.getSelectedFile();
+            System.out.print("Saving: " + openFile.getName() + "...");
+            try {
+                XMLEncoder encoder = new XMLEncoder(new BufferedOutputStream(new FileOutputStream(openFile)));
+                encoder.writeObject(trainedGestures);
+                encoder.close();
+                System.out.println(" successful.");
+            } catch (FileNotFoundException ex) {
+                Logger.getLogger(GTrainer.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } else {
+            System.out.println(" save command cancelled by user.");
+        }
+    }//GEN-LAST:event_saveAsMenuItemActionPerformed
 
     /**
     * @param args the command line arguments
@@ -299,25 +444,29 @@ public class GTrainer extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton acceptButton;
+    private javax.swing.JLabel closestLabel;
     private javax.swing.JComboBox contextBox;
+    private javax.swing.JLabel contextLabel;
+    private javax.swing.JMenuItem exitMenuItem;
+    private javax.swing.JMenu fileMenu;
     private javax.swing.JTable gestureTable;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
-    private javax.swing.JMenu jMenu1;
-    private javax.swing.JMenu jMenu2;
     private javax.swing.JMenuBar jMenuBar1;
-    private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JSeparator jSeparator1;
     private javax.swing.JToolBar jToolBar1;
-    private javax.swing.JLabel lookupDist;
-    private org.bm.firestorm.gestures.ParametricPathPanel lookupPanel;
-    private javax.swing.JLabel lookupString;
+    private javax.swing.JLabel lookupDistLabel;
+    private org.bm.firestorm.gestures.ParametricPathPanel lookupGesturePanel;
+    private javax.swing.JLabel lookupStringLabel;
+    private javax.swing.JPanel mainPanel;
+    private javax.swing.JMenuItem openMenuItem;
     private org.bm.firestorm.gestures.PolyReader reader;
     private org.bm.firestorm.gestures.ParametricPathPanel reflectPanel;
     private javax.swing.JButton rejectButton;
+    private javax.swing.JMenuItem saveAsMenuItem;
+    private javax.swing.JMenuItem saveMenuItem;
+    private javax.swing.JLabel storedLabel;
     private javax.swing.JTextField trainString;
+    private javax.swing.JLabel trainStringLabel;
     private org.bm.firestorm.gestures.data.CoefficientClassifier trainedGestures;
     private org.bm.firestorm.gestures.GPanel trainingPanel;
     // End of variables declaration//GEN-END:variables
