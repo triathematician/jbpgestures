@@ -72,7 +72,7 @@ public class GTrainer extends javax.swing.JFrame {
     /** Creates new form GTrainer */
     public GTrainer() {
         initComponents();
-        gestureTable.setModel(trainedGestures.getTableModel());
+        gestureTable.setModel( new CoefficientClassifier.GestureTableModel(trainedGestures) );
     }
 
     /** This method is called from within the constructor to
@@ -337,7 +337,7 @@ public class GTrainer extends javax.swing.JFrame {
         double[][] coeffs = reader.convertPath(trainingPanel.getLastPath());
         trainedGestures.put(context(), coeffs, trainString.getText());
         trainingPanel.clearAllPaths();
-        gestureTable.setModel(trainedGestures.getTableModel());
+        ((CoefficientClassifier.GestureTableModel) gestureTable.getModel()).stateChanged(null);
     }//GEN-LAST:event_acceptButtonActionPerformed
 
     private void trainStringActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_trainStringActionPerformed
@@ -381,7 +381,7 @@ public class GTrainer extends javax.swing.JFrame {
             try {
                 XMLDecoder decoder = new XMLDecoder(new BufferedInputStream(new FileInputStream(openFile)));
                 trainedGestures = (CoefficientClassifier) decoder.readObject();
-                gestureTable.setModel(trainedGestures.getTableModel());
+                gestureTable.setModel( new CoefficientClassifier.GestureTableModel(trainedGestures) );
                 decoder.close();
                 System.out.println(" successful.");
             } catch (FileNotFoundException ex) {

@@ -13,6 +13,8 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeMap;
 import java.util.TreeSet;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 
@@ -142,15 +144,35 @@ public class CoefficientClassifier<T> implements java.io.Serializable {
     // TABLE METHODS
     //
 
-    public static final Object[] HEADER = new Object[]{"Value", "Context", "Coefficients"};
 
-    public TableModel getTableModel() {
-        final Object[][] rowData = new Object[database.size()][3];
+    public static <T> Object[][] getRowData(CoefficientClassifier<T> cocl) {
+        final Object[][] rowData = new Object[cocl.database.size()][3];
         int i = 0;
-        for (Entry<TrainGesture,T> en : database.entrySet()) {
+        for (Entry<TrainGesture,T> en : cocl.database.entrySet()) {
             rowData[i] = new Object[] { en.getValue(), en.getKey().context, Arrays.deepToString(en.getKey().arrays) };
             i++;
         }
-        return new DefaultTableModel(rowData, HEADER);
+        return rowData;
+    }
+
+    public static final Object[] HEADER = new Object[]{"Value", "Context", "Coefficients"};
+
+    /** Implements a table displaying each entry in the gesture table by its (i) value, (ii) context, (iii) coefficients. */
+    public static class GestureTableModel extends DefaultTableModel implements ChangeListener {
+        CoefficientClassifier cocl;
+
+        public GestureTableModel(CoefficientClassifier cocl) {
+            super(getRowData(cocl), HEADER);
+            this.cocl = cocl;
+        }
+
+        @Override
+        public boolean isCellEditable(int row, int column) {
+            return column == 1;
+        }
+
+        public void stateChanged(ChangeEvent e) {
+            setDataVector(getRowData(cocl), HEADER);
+        }
     }
 }
