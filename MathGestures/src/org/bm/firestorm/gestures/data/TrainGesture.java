@@ -15,6 +15,7 @@ import org.bm.firestorm.functionspace.VectorUtils;
  * @author Elisha Peterson
  */
 public class TrainGesture implements Comparable<TrainGesture>, java.io.Serializable {
+    
     /** Stores context of the gesture. */
     TrainContext context = TrainContext.NONE;
     /** Stores arrays of the gesture. First array is x coords, second is y coords. */
@@ -24,7 +25,7 @@ public class TrainGesture implements Comparable<TrainGesture>, java.io.Serializa
      * Construct without any information, without a training context
      */
     public TrainGesture() {
-        this.arrays = new double[0][0];
+        setArrays(arrays);
     }
 
     /**
@@ -32,7 +33,7 @@ public class TrainGesture implements Comparable<TrainGesture>, java.io.Serializa
      * @param arrays the arrays containing the numeric data for the gesture
      */
     public TrainGesture(double[][] arrays) {
-        this.arrays = arrays;
+        setArrays(arrays);
     }
 
     /**
@@ -41,7 +42,7 @@ public class TrainGesture implements Comparable<TrainGesture>, java.io.Serializa
      * @param arrays the arrays containing the numeric data for the gesture
      */
     public TrainGesture(TrainContext context, double[][] arrays) {
-        this.context = context;
+        setContext(context);
         setArrays(arrays);
     }
 
@@ -63,6 +64,18 @@ public class TrainGesture implements Comparable<TrainGesture>, java.io.Serializa
 
     public void setContext(TrainContext context) {
         this.context = context;
+    }
+
+    public int getContextAsInteger() {
+        TrainContext[] vals = TrainContext.values();
+        for (int i = 0; i < vals.length; i++) {
+            if (vals[i] == context) return i;
+        }
+        return -1;
+    }
+
+    public void setContextAsInteger(int index) {
+        setContext(TrainContext.values()[index]);
     }
 
     //

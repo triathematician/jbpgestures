@@ -11,6 +11,7 @@
 
 package org.bm.firestorm.testing;
 
+import java.awt.Component;
 import java.beans.XMLDecoder;
 import java.beans.XMLEncoder;
 import java.io.BufferedInputStream;
@@ -19,16 +20,22 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.util.Arrays;
 import java.util.NoSuchElementException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.DefaultCellEditor;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
+import javax.swing.JTable;
 import javax.swing.filechooser.FileFilter;
+import javax.swing.table.DefaultTableCellRenderer;
 import org.bm.firestorm.functionspace.FunctionUtils;
 import org.bm.firestorm.functionspace.ONLegendre;
 import org.bm.firestorm.gestures.PolyReader;
 import org.bm.firestorm.gestures.data.CoefficientClassifier;
+import org.bm.firestorm.gestures.data.GestureTableModel;
 import org.bm.firestorm.gestures.data.TrainContext;
 import org.bm.firestorm.gestures.data.TrainGesture;
 
@@ -69,10 +76,22 @@ public class GTrainer extends javax.swing.JFrame {
         }
     };
 
+    void resetTable() {
+        JComboBox jcb = new JComboBox(new DefaultComboBoxModel(TrainContext.values()));
+        gestureTable.setModel( new GestureTableModel(trainedGestures) );
+        gestureTable.getColumnModel().getColumn(1).setCellEditor(new DefaultCellEditor(jcb));
+        gestureTable.getColumnModel().getColumn(2).setCellRenderer(new DefaultTableCellRenderer(){
+            @Override public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+                return super.getTableCellRendererComponent(table, Arrays.deepToString((Object[]) value), isSelected, hasFocus, row, column);
+            }
+        });
+        gestureTable.repaint();
+    }
+
     /** Creates new form GTrainer */
     public GTrainer() {
         initComponents();
-        gestureTable.setModel( new CoefficientClassifier.GestureTableModel(trainedGestures) );
+        resetTable();
     }
 
     /** This method is called from within the constructor to
@@ -167,6 +186,11 @@ public class GTrainer extends javax.swing.JFrame {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
+        gestureTable.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                gestureTableMouseClicked(evt);
+            }
+        });
         jScrollPane2.setViewportView(gestureTable);
 
         reflectPanel.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(102, 102, 102)));
@@ -222,7 +246,7 @@ public class GTrainer extends javax.swing.JFrame {
         closestLabel.setForeground(new java.awt.Color(102, 102, 102));
         closestLabel.setText("Closest Gesture:");
 
-        lookupStringLabel.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
+        lookupStringLabel.setFont(new java.awt.Font("Tahoma", 1, 18));
         lookupStringLabel.setForeground(new java.awt.Color(204, 0, 51));
         lookupStringLabel.setText("NONE");
 
@@ -337,11 +361,11 @@ public class GTrainer extends javax.swing.JFrame {
         double[][] coeffs = reader.convertPath(trainingPanel.getLastPath());
         trainedGestures.put(context(), coeffs, trainString.getText());
         trainingPanel.clearAllPaths();
-        ((CoefficientClassifier.GestureTableModel) gestureTable.getModel()).stateChanged(null);
+        resetTable(); // TODO - this is overly harsh, could be easier
     }//GEN-LAST:event_acceptButtonActionPerformed
 
     private void trainStringActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_trainStringActionPerformed
-        // TODO add your handling code here:
+        acceptButtonActionPerformed(null);
     }//GEN-LAST:event_trainStringActionPerformed
 
     private void rejectButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rejectButtonActionPerformed
@@ -381,7 +405,7 @@ public class GTrainer extends javax.swing.JFrame {
             try {
                 XMLDecoder decoder = new XMLDecoder(new BufferedInputStream(new FileInputStream(openFile)));
                 trainedGestures = (CoefficientClassifier) decoder.readObject();
-                gestureTable.setModel( new CoefficientClassifier.GestureTableModel(trainedGestures) );
+                resetTable();
                 decoder.close();
                 System.out.println(" successful.");
             } catch (FileNotFoundException ex) {
@@ -430,6 +454,13 @@ public class GTrainer extends javax.swing.JFrame {
             System.out.println(" save command cancelled by user.");
         }
     }//GEN-LAST:event_saveAsMenuItemActionPerformed
+
+    private void gestureTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_gestureTableMouseClicked
+        int row = gestureTable.getSelectedRow();
+        double[][] arr = (double[][]) gestureTable.getModel().getValueAt(row, 2);
+        lookupGesturePanel.setFunctions(new FunctionUtils.CFunction(onl, arr[0]), new FunctionUtils.CFunction(onl, arr[1]));
+        lookupGesturePanel.repaint();
+    }//GEN-LAST:event_gestureTableMouseClicked
 
     /**
     * @param args the command line arguments

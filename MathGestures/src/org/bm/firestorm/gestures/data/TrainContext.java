@@ -20,6 +20,7 @@ public enum TrainContext implements java.io.Serializable {
     MATH ("Math"),
     SHAPES ("Shapes");
 
+    /** The displayed name of the context. */
     String name;
 
     TrainContext(String name) {

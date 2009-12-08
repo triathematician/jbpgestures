@@ -5,7 +5,6 @@
 
 package org.bm.firestorm.gestures.data;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Map.Entry;
@@ -13,10 +12,6 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeMap;
 import java.util.TreeSet;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
-import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableModel;
 
 /**
  * <p>
@@ -37,6 +32,7 @@ public class CoefficientClassifier<T> implements java.io.Serializable {
     // DELEGATE METHODS
     //
 
+    /** @return size of database, i.e. number of trained gestures. */
     public int size() {
         return database.size();
     }
@@ -63,6 +59,15 @@ public class CoefficientClassifier<T> implements java.io.Serializable {
 
     public T get(TrainGesture key) {
         return database.get(key);
+    }
+
+    public Entry<TrainGesture, T> get(int index) {
+        int i = 0;
+        for (Entry<TrainGesture, T> entry : database.entrySet()) {
+            if (i == index) return entry;
+            i++;
+        }
+        return null;
     }
 
     public Set<Entry<TrainGesture, T>> entrySet() {
@@ -138,41 +143,5 @@ public class CoefficientClassifier<T> implements java.io.Serializable {
      */
     public TrainGesture closestTo(TrainContext context, double[][] coeffs) {
         return Collections.min(database.keySet(), gComparator(new TrainGesture(context, coeffs)));
-    }
-
-    //
-    // TABLE METHODS
-    //
-
-
-    public static <T> Object[][] getRowData(CoefficientClassifier<T> cocl) {
-        final Object[][] rowData = new Object[cocl.database.size()][3];
-        int i = 0;
-        for (Entry<TrainGesture,T> en : cocl.database.entrySet()) {
-            rowData[i] = new Object[] { en.getValue(), en.getKey().context, Arrays.deepToString(en.getKey().arrays) };
-            i++;
-        }
-        return rowData;
-    }
-
-    public static final Object[] HEADER = new Object[]{"Value", "Context", "Coefficients"};
-
-    /** Implements a table displaying each entry in the gesture table by its (i) value, (ii) context, (iii) coefficients. */
-    public static class GestureTableModel extends DefaultTableModel implements ChangeListener {
-        CoefficientClassifier cocl;
-
-        public GestureTableModel(CoefficientClassifier cocl) {
-            super(getRowData(cocl), HEADER);
-            this.cocl = cocl;
-        }
-
-        @Override
-        public boolean isCellEditable(int row, int column) {
-            return column == 1;
-        }
-
-        public void stateChanged(ChangeEvent e) {
-            setDataVector(getRowData(cocl), HEADER);
-        }
     }
 }
