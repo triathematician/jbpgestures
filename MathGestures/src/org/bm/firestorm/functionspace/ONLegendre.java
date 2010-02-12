@@ -5,6 +5,10 @@ package org.bm.firestorm.functionspace;
  */
 public class ONLegendre implements OrthogonalPolynomials {
 
+    public static final ONLegendre INSTANCE = new ONLegendre();
+
+    private ONLegendre() {}
+
     static final double[] range = {-1.0, 1.0};
 
     public double[] getRange() {

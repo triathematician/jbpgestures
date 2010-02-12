@@ -16,20 +16,20 @@ import javax.swing.event.ChangeListener;
 import javax.swing.table.DefaultTableModel;
 import org.bm.firestorm.functionspace.FunctionUtils;
 import org.bm.firestorm.functionspace.ONLegendre;
-import org.bm.firestorm.gestures.ParametricPathPanel;
+import org.bm.firestorm.gestures.ui.ParametricPathPanel;
 import org.bm.firestorm.gestures.PolyReader;
 
 /**
  *
  * @author elisha
  */
-public class GPanelTest extends javax.swing.JFrame {
+public class DrawPanelTest extends javax.swing.JFrame {
 
     final PolyReader pr = new PolyReader();
-    final ONLegendre onl = new ONLegendre();
+    final ONLegendre onl = ONLegendre.INSTANCE;
 
     /** Creates new form GPanelTest */
-    public GPanelTest() {
+    public DrawPanelTest() {
         initComponents();
         gPanel1.addChangeListener(new ChangeListener(){
             public void stateChanged(ChangeEvent e) {
@@ -63,11 +63,11 @@ public class GPanelTest extends javax.swing.JFrame {
     private void initComponents() {
 
         jSplitPane1 = new javax.swing.JSplitPane();
-        gPanel1 = new org.bm.firestorm.gestures.GPanel();
+        gPanel1 = new org.bm.firestorm.gestures.ui.DrawPanel();
         jSplitPane2 = new javax.swing.JSplitPane();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
-        parametricPathPanel1 = new org.bm.firestorm.gestures.ParametricPathPanel();
+        parametricPathPanel1 = new org.bm.firestorm.gestures.ui.ParametricPathPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -139,18 +139,18 @@ public class GPanelTest extends javax.swing.JFrame {
     public static void main(String args[]) {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new GPanelTest().setVisible(true);
+                new DrawPanelTest().setVisible(true);
             }
         });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private org.bm.firestorm.gestures.GPanel gPanel1;
+    private org.bm.firestorm.gestures.ui.DrawPanel gPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JSplitPane jSplitPane1;
     private javax.swing.JSplitPane jSplitPane2;
     private javax.swing.JTable jTable1;
-    private org.bm.firestorm.gestures.ParametricPathPanel parametricPathPanel1;
+    private org.bm.firestorm.gestures.ui.ParametricPathPanel parametricPathPanel1;
     // End of variables declaration//GEN-END:variables
 
 }

@@ -25,7 +25,7 @@ public class PolyReader implements PathReader {
     final static int DEGREE = 15;
 
     public double[][] convertPath(GeneralPath path) {
-        ONLegendre l = new ONLegendre();
+        ONLegendre l = ONLegendre.INSTANCE;
         List<Point2D.Double[]> paths = PathUtils.splitPath(path);
         double[][] result = new double[2][DEGREE+1];
         for (Point2D.Double[] p : paths) {
@@ -113,7 +113,7 @@ public class PolyReader implements PathReader {
     }
 
     public static void main(String[] args) {
-        ONLegendre l = new ONLegendre();
+        ONLegendre l = ONLegendre.INSTANCE;
         Function f = new Function() { public double getValue(double x) { return Math.cos(3*x)+x*x*x; }; };
         System.out.println(Arrays.toString(FunctionUtils.getCoefficients(f, l, 10)));
     }

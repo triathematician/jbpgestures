@@ -21,10 +21,21 @@
                 <Property name="accelerator" type="javax.swing.KeyStroke" editor="org.netbeans.modules.form.editors.KeyStrokeEditor">
                   <KeyStroke key="Ctrl+O"/>
                 </Property>
-                <Property name="text" type="java.lang.String" value="Open Gesture Database"/>
+                <Property name="text" type="java.lang.String" value="Open Gesture Database..."/>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="openMenuItemActionPerformed"/>
+              </Events>
+            </MenuItem>
+            <MenuItem class="javax.swing.JMenuItem" name="appendMenuItem">
+              <Properties>
+                <Property name="accelerator" type="javax.swing.KeyStroke" editor="org.netbeans.modules.form.editors.KeyStrokeEditor">
+                  <KeyStroke key="Shift+Ctrl+O"/>
+                </Property>
+                <Property name="text" type="java.lang.String" value="Append Gesture Database..."/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="appendMenuItemActionPerformed"/>
               </Events>
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="saveMenuItem">
@@ -82,7 +93,7 @@
     <AuxValue name="FormSettings_listenerGenerationStyle" type="java.lang.Integer" value="0"/>
     <AuxValue name="FormSettings_variablesLocal" type="java.lang.Boolean" value="false"/>
     <AuxValue name="FormSettings_variablesModifier" type="java.lang.Integer" value="2"/>
-    <AuxValue name="designerSize" type="java.awt.Dimension" value="-84,-19,0,5,115,114,0,18,106,97,118,97,46,97,119,116,46,68,105,109,101,110,115,105,111,110,65,-114,-39,-41,-84,95,68,20,2,0,2,73,0,6,104,101,105,103,104,116,73,0,5,119,105,100,116,104,120,112,0,0,1,-18,0,0,2,-90"/>
+    <AuxValue name="designerSize" type="java.awt.Dimension" value="-84,-19,0,5,115,114,0,18,106,97,118,97,46,97,119,116,46,68,105,109,101,110,115,105,111,110,65,-114,-39,-41,-84,95,68,20,2,0,2,73,0,6,104,101,105,103,104,116,73,0,5,119,105,100,116,104,120,112,0,0,2,10,0,0,2,-90"/>
   </AuxValues>
 
   <Layout class="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout"/>
@@ -134,29 +145,22 @@
         <DimensionLayout dim="0">
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" attributes="0">
-                  <EmptySpace max="-2" attributes="0"/>
+                  <EmptySpace min="-2" pref="15" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="1" attributes="0">
                       <Component id="trainingPanel" min="-2" max="-2" attributes="0"/>
                       <Group type="102" attributes="0">
-                          <Group type="103" groupAlignment="1" attributes="0">
-                              <Component id="lookupStringLabel" min="-2" max="-2" attributes="0"/>
-                              <Group type="103" alignment="1" groupAlignment="0" max="-2" attributes="0">
-                                  <Component id="rejectButton" max="32767" attributes="1"/>
-                                  <Component id="acceptButton" alignment="1" max="32767" attributes="1"/>
-                                  <Component id="storedLabel" alignment="1" min="-2" max="-2" attributes="1"/>
-                              </Group>
-                              <Component id="closestLabel" alignment="1" min="-2" max="-2" attributes="0"/>
-                              <Component id="lookupDistLabel" alignment="1" min="-2" max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                              <Component id="rejectButton" max="32767" attributes="1"/>
+                              <Component id="acceptButton" alignment="1" max="32767" attributes="1"/>
+                              <Component id="storedLabel" alignment="1" min="-2" max="-2" attributes="1"/>
                           </Group>
                           <EmptySpace max="-2" attributes="0"/>
-                          <Group type="103" groupAlignment="0" attributes="0">
-                              <Component id="lookupGesturePanel" alignment="0" min="-2" max="-2" attributes="0"/>
-                              <Component id="reflectPanel" alignment="0" min="-2" max="-2" attributes="0"/>
-                          </Group>
+                          <Component id="reflectPanel" min="-2" max="-2" attributes="0"/>
                       </Group>
+                      <Component id="gestureLookupPanel1" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
-                  <Component id="jScrollPane2" pref="444" max="32767" attributes="0"/>
+                  <Component id="jScrollPane2" pref="437" max="32767" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
               </Group>
           </Group>
@@ -166,7 +170,7 @@
               <Group type="102" alignment="0" attributes="0">
                   <EmptySpace min="-2" pref="13" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <Component id="jScrollPane2" alignment="0" pref="418" max="32767" attributes="2"/>
+                      <Component id="jScrollPane2" alignment="0" pref="446" max="32767" attributes="2"/>
                       <Group type="102" alignment="0" attributes="0">
                           <Component id="trainingPanel" min="-2" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
@@ -181,16 +185,7 @@
                               <Component id="reflectPanel" alignment="0" min="-2" max="-2" attributes="0"/>
                           </Group>
                           <EmptySpace max="-2" attributes="0"/>
-                          <Group type="103" groupAlignment="0" attributes="0">
-                              <Component id="lookupGesturePanel" min="-2" max="-2" attributes="0"/>
-                              <Group type="102" attributes="0">
-                                  <Component id="closestLabel" min="-2" max="-2" attributes="0"/>
-                                  <EmptySpace max="-2" attributes="0"/>
-                                  <Component id="lookupStringLabel" min="-2" max="-2" attributes="0"/>
-                                  <EmptySpace max="-2" attributes="0"/>
-                                  <Component id="lookupDistLabel" min="-2" max="-2" attributes="0"/>
-                              </Group>
-                          </Group>
+                          <Component id="gestureLookupPanel1" min="-2" max="-2" attributes="0"/>
                       </Group>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
@@ -199,7 +194,7 @@
         </DimensionLayout>
       </Layout>
       <SubComponents>
-        <Container class="org.bm.firestorm.gestures.GPanel" name="trainingPanel">
+        <Container class="org.bm.firestorm.gestures.ui.DrawPanel" name="trainingPanel">
           <Properties>
             <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
               <Border info="org.netbeans.modules.form.compat2.border.LineBorderInfo">
@@ -258,7 +253,7 @@
             </Component>
           </SubComponents>
         </Container>
-        <Container class="org.bm.firestorm.gestures.ParametricPathPanel" name="reflectPanel">
+        <Container class="org.bm.firestorm.gestures.ui.ParametricPathPanel" name="reflectPanel">
           <Properties>
             <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
               <Border info="org.netbeans.modules.form.compat2.border.LineBorderInfo">
@@ -307,61 +302,12 @@
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="rejectButtonActionPerformed"/>
           </Events>
         </Component>
-        <Container class="org.bm.firestorm.gestures.ParametricPathPanel" name="lookupGesturePanel">
-          <Properties>
-            <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
-              <Border info="org.netbeans.modules.form.compat2.border.LineBorderInfo">
-                <LineBorder>
-                  <Color PropertyName="color" blue="99" green="99" red="99" type="rgb"/>
-                </LineBorder>
-              </Border>
-            </Property>
-            <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-              <Dimension value="[100, 100]"/>
-            </Property>
-          </Properties>
-
-          <Layout>
-            <DimensionLayout dim="0">
-              <Group type="103" groupAlignment="0" attributes="0">
-                  <EmptySpace min="0" pref="100" max="32767" attributes="0"/>
-              </Group>
-            </DimensionLayout>
-            <DimensionLayout dim="1">
-              <Group type="103" groupAlignment="0" attributes="0">
-                  <EmptySpace min="0" pref="100" max="32767" attributes="0"/>
-              </Group>
-            </DimensionLayout>
-          </Layout>
-        </Container>
         <Component class="javax.swing.JLabel" name="storedLabel">
           <Properties>
             <Property name="text" type="java.lang.String" value="Stored Gesture:"/>
           </Properties>
         </Component>
-        <Component class="javax.swing.JLabel" name="closestLabel">
-          <Properties>
-            <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-              <Color blue="66" green="66" red="66" type="rgb"/>
-            </Property>
-            <Property name="text" type="java.lang.String" value="Closest Gesture:"/>
-          </Properties>
-        </Component>
-        <Component class="javax.swing.JLabel" name="lookupStringLabel">
-          <Properties>
-            <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-              <Font name="Tahoma" size="18" style="1"/>
-            </Property>
-            <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-              <Color blue="33" green="0" red="cc" type="rgb"/>
-            </Property>
-            <Property name="text" type="java.lang.String" value="NONE"/>
-          </Properties>
-        </Component>
-        <Component class="javax.swing.JLabel" name="lookupDistLabel">
-          <Properties>
-            <Property name="text" type="java.lang.String" value="dist=0.0"/>
-          </Properties>
+        <Component class="org.bm.firestorm.gestures.ui.GestureLookupPanel" name="gestureLookupPanel1">
         </Component>
       </SubComponents>
     </Container>

@@ -2,8 +2,9 @@
  * GestureTableModel.java
  * Created on Dec 8, 2009
  */
-package org.bm.firestorm.gestures.data;
+package org.bm.firestorm.gestures.ui;
 
+import org.bm.firestorm.gestures.data.*;
 import java.util.Map.Entry;
 import javax.swing.table.AbstractTableModel;
 
@@ -41,7 +42,7 @@ public class GestureTableModel extends AbstractTableModel {
         switch(col) {
             case 0: return String.class;
             case 1: return TrainContext.class;
-            case 2: return double[][].class;
+            case 2: return TrainGesture.class;
         }
         return Object.class;
     }
@@ -54,7 +55,7 @@ public class GestureTableModel extends AbstractTableModel {
             case 1:
                 return en.getKey().context;
             case 2:
-                return en.getKey().arrays;
+                return en.getKey();
             default:
                 throw new ArrayIndexOutOfBoundsException();
         }

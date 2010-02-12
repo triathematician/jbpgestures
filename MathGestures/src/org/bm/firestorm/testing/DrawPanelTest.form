@@ -39,7 +39,7 @@
 
       <Layout class="org.netbeans.modules.form.compat2.layouts.support.JSplitPaneSupportLayout"/>
       <SubComponents>
-        <Container class="org.bm.firestorm.gestures.GPanel" name="gPanel1">
+        <Container class="org.bm.firestorm.gestures.ui.DrawPanel" name="gPanel1">
           <Constraints>
             <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.support.JSplitPaneSupportLayout" value="org.netbeans.modules.form.compat2.layouts.support.JSplitPaneSupportLayout$JSplitPaneConstraintsDescription">
               <JSplitPaneConstraints position="left"/>
@@ -98,7 +98,7 @@
                 </Component>
               </SubComponents>
             </Container>
-            <Container class="org.bm.firestorm.gestures.ParametricPathPanel" name="parametricPathPanel1">
+            <Container class="org.bm.firestorm.gestures.ui.ParametricPathPanel" name="parametricPathPanel1">
               <Constraints>
                 <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.support.JSplitPaneSupportLayout" value="org.netbeans.modules.form.compat2.layouts.support.JSplitPaneSupportLayout$JSplitPaneConstraintsDescription">
                   <JSplitPaneConstraints position="left"/>

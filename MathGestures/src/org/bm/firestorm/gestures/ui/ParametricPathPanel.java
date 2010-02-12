@@ -3,7 +3,7 @@
  * Created on Oct 15, 2009
  */
 
-package org.bm.firestorm.gestures;
+package org.bm.firestorm.gestures.ui;
 
 import java.awt.Graphics;
 import java.awt.Graphics2D;

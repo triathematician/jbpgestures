@@ -35,7 +35,7 @@ import org.bm.firestorm.functionspace.FunctionUtils;
 import org.bm.firestorm.functionspace.ONLegendre;
 import org.bm.firestorm.gestures.PolyReader;
 import org.bm.firestorm.gestures.data.CoefficientClassifier;
-import org.bm.firestorm.gestures.data.GestureTableModel;
+import org.bm.firestorm.gestures.ui.GestureTableModel;
 import org.bm.firestorm.gestures.data.TrainContext;
 import org.bm.firestorm.gestures.data.TrainGesture;
 
@@ -43,10 +43,10 @@ import org.bm.firestorm.gestures.data.TrainGesture;
  *
  * @author ae3263
  */
-public class GTrainer extends javax.swing.JFrame {
+public class GestureTrainerApp extends javax.swing.JFrame {
 
     final PolyReader pr = new PolyReader();
-    final ONLegendre onl = new ONLegendre();
+    final ONLegendre onl = ONLegendre.INSTANCE;
 
     final JFileChooser fc = new JFileChooser();
     File openFile = null;
@@ -80,16 +80,11 @@ public class GTrainer extends javax.swing.JFrame {
         JComboBox jcb = new JComboBox(new DefaultComboBoxModel(TrainContext.values()));
         gestureTable.setModel( new GestureTableModel(trainedGestures) );
         gestureTable.getColumnModel().getColumn(1).setCellEditor(new DefaultCellEditor(jcb));
-        gestureTable.getColumnModel().getColumn(2).setCellRenderer(new DefaultTableCellRenderer(){
-            @Override public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-                return super.getTableCellRendererComponent(table, Arrays.deepToString((Object[]) value), isSelected, hasFocus, row, column);
-            }
-        });
         gestureTable.repaint();
     }
 
     /** Creates new form GTrainer */
-    public GTrainer() {
+    public GestureTrainerApp() {
         initComponents();
         resetTable();
     }
@@ -111,20 +106,18 @@ public class GTrainer extends javax.swing.JFrame {
         trainStringLabel = new javax.swing.JLabel();
         trainString = new javax.swing.JTextField();
         mainPanel = new javax.swing.JPanel();
-        trainingPanel = new org.bm.firestorm.gestures.GPanel();
+        trainingPanel = new org.bm.firestorm.gestures.ui.DrawPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
         gestureTable = new javax.swing.JTable();
-        reflectPanel = new org.bm.firestorm.gestures.ParametricPathPanel();
+        reflectPanel = new org.bm.firestorm.gestures.ui.ParametricPathPanel();
         acceptButton = new javax.swing.JButton();
         rejectButton = new javax.swing.JButton();
-        lookupGesturePanel = new org.bm.firestorm.gestures.ParametricPathPanel();
         storedLabel = new javax.swing.JLabel();
-        closestLabel = new javax.swing.JLabel();
-        lookupStringLabel = new javax.swing.JLabel();
-        lookupDistLabel = new javax.swing.JLabel();
+        gestureLookupPanel1 = new org.bm.firestorm.gestures.ui.GestureLookupPanel();
         jMenuBar1 = new javax.swing.JMenuBar();
         fileMenu = new javax.swing.JMenu();
         openMenuItem = new javax.swing.JMenuItem();
+        appendMenuItem = new javax.swing.JMenuItem();
         saveMenuItem = new javax.swing.JMenuItem();
         saveAsMenuItem = new javax.swing.JMenuItem();
         jSeparator1 = new javax.swing.JSeparator();
@@ -227,54 +220,26 @@ public class GTrainer extends javax.swing.JFrame {
             }
         });
 
-        lookupGesturePanel.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
-        lookupGesturePanel.setMaximumSize(new java.awt.Dimension(100, 100));
-
-        org.jdesktop.layout.GroupLayout lookupGesturePanelLayout = new org.jdesktop.layout.GroupLayout(lookupGesturePanel);
-        lookupGesturePanel.setLayout(lookupGesturePanelLayout);
-        lookupGesturePanelLayout.setHorizontalGroup(
-            lookupGesturePanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 100, Short.MAX_VALUE)
-        );
-        lookupGesturePanelLayout.setVerticalGroup(
-            lookupGesturePanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 100, Short.MAX_VALUE)
-        );
-
         storedLabel.setText("Stored Gesture:");
-
-        closestLabel.setForeground(new java.awt.Color(102, 102, 102));
-        closestLabel.setText("Closest Gesture:");
-
-        lookupStringLabel.setFont(new java.awt.Font("Tahoma", 1, 18));
-        lookupStringLabel.setForeground(new java.awt.Color(204, 0, 51));
-        lookupStringLabel.setText("NONE");
-
-        lookupDistLabel.setText("dist=0.0");
 
         org.jdesktop.layout.GroupLayout mainPanelLayout = new org.jdesktop.layout.GroupLayout(mainPanel);
         mainPanel.setLayout(mainPanelLayout);
         mainPanelLayout.setHorizontalGroup(
             mainPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(mainPanelLayout.createSequentialGroup()
-                .addContainerGap()
+                .add(15, 15, 15)
                 .add(mainPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
                     .add(trainingPanel, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                     .add(mainPanelLayout.createSequentialGroup()
-                        .add(mainPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
-                            .add(lookupStringLabel)
-                            .add(mainPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING, false)
-                                .add(rejectButton, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .add(org.jdesktop.layout.GroupLayout.TRAILING, acceptButton, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .add(org.jdesktop.layout.GroupLayout.TRAILING, storedLabel))
-                            .add(closestLabel)
-                            .add(lookupDistLabel))
+                        .add(mainPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING, false)
+                            .add(rejectButton, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .add(org.jdesktop.layout.GroupLayout.TRAILING, acceptButton, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .add(org.jdesktop.layout.GroupLayout.TRAILING, storedLabel))
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(mainPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                            .add(lookupGesturePanel, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                            .add(reflectPanel, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))))
+                        .add(reflectPanel, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                    .add(gestureLookupPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(jScrollPane2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 444, Short.MAX_VALUE)
+                .add(jScrollPane2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 437, Short.MAX_VALUE)
                 .addContainerGap())
         );
         mainPanelLayout.setVerticalGroup(
@@ -282,7 +247,7 @@ public class GTrainer extends javax.swing.JFrame {
             .add(mainPanelLayout.createSequentialGroup()
                 .add(13, 13, 13)
                 .add(mainPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(jScrollPane2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 418, Short.MAX_VALUE)
+                    .add(jScrollPane2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 446, Short.MAX_VALUE)
                     .add(mainPanelLayout.createSequentialGroup()
                         .add(trainingPanel, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
@@ -295,14 +260,7 @@ public class GTrainer extends javax.swing.JFrame {
                                 .add(rejectButton))
                             .add(reflectPanel, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(mainPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                            .add(lookupGesturePanel, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                            .add(mainPanelLayout.createSequentialGroup()
-                                .add(closestLabel)
-                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                                .add(lookupStringLabel)
-                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                                .add(lookupDistLabel)))))
+                        .add(gestureLookupPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
 
@@ -311,13 +269,22 @@ public class GTrainer extends javax.swing.JFrame {
         fileMenu.setText("File");
 
         openMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_O, java.awt.event.InputEvent.CTRL_MASK));
-        openMenuItem.setText("Open Gesture Database");
+        openMenuItem.setText("Open Gesture Database...");
         openMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 openMenuItemActionPerformed(evt);
             }
         });
         fileMenu.add(openMenuItem);
+
+        appendMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_O, java.awt.event.InputEvent.SHIFT_MASK | java.awt.event.InputEvent.CTRL_MASK));
+        appendMenuItem.setText("Append Gesture Database...");
+        appendMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                appendMenuItemActionPerformed(evt);
+            }
+        });
+        fileMenu.add(appendMenuItem);
 
         saveMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.CTRL_MASK));
         saveMenuItem.setText("Save Gesture Database");
@@ -378,12 +345,7 @@ public class GTrainer extends javax.swing.JFrame {
         reflectPanel.repaint();
         try {
             TrainGesture tg = new TrainGesture(context(), coeffs);
-            TrainGesture best = trainedGestures.closestTo(tg);
-            lookupStringLabel.setText( (String) trainedGestures.get(best) );
-            System.out.println( (String) trainedGestures.get(best) );
-            lookupDistLabel.setText( String.format("%.2f", best.distance(tg)) );
-            lookupGesturePanel.setFunctions(new FunctionUtils.CFunction(onl, best.getArrays()[0]), new FunctionUtils.CFunction(onl, best.getArrays()[1]));
-            lookupGesturePanel.repaint();
+            gestureLookupPanel1.lookupGesture(tg, trainedGestures);
         } catch (NoSuchElementException e) {
         }
     }//GEN-LAST:event_trainingPanelStateChanged
@@ -398,7 +360,7 @@ public class GTrainer extends javax.swing.JFrame {
             fc.setCurrentDirectory(openFile);
             fc.setSelectedFile(openFile);
         }
-        int returnVal = fc.showOpenDialog(GTrainer.this);
+        int returnVal = fc.showOpenDialog(GestureTrainerApp.this);
         if (returnVal == JFileChooser.APPROVE_OPTION) {
             openFile = fc.getSelectedFile();
             System.out.print("Opening: " + openFile.getName() + "...");
@@ -409,7 +371,7 @@ public class GTrainer extends javax.swing.JFrame {
                 decoder.close();
                 System.out.println(" successful.");
             } catch (FileNotFoundException ex) {
-                Logger.getLogger(GTrainer.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(GestureTrainerApp.class.getName()).log(Level.SEVERE, null, ex);
             }
         } else {
             System.out.println(" open command cancelled by user.");
@@ -425,7 +387,7 @@ public class GTrainer extends javax.swing.JFrame {
                 encoder.close();
                 System.out.println(" successful.");
             } catch (FileNotFoundException ex) {
-                Logger.getLogger(GTrainer.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(GestureTrainerApp.class.getName()).log(Level.SEVERE, null, ex);
             }
         } else {
             saveAsMenuItemActionPerformed(evt);
@@ -438,7 +400,7 @@ public class GTrainer extends javax.swing.JFrame {
             fc.setCurrentDirectory(openFile);
             fc.setSelectedFile(openFile);
         }
-        int returnVal = fc.showSaveDialog(GTrainer.this);
+        int returnVal = fc.showSaveDialog(GestureTrainerApp.this);
         if (returnVal == JFileChooser.APPROVE_OPTION) {
             openFile = fc.getSelectedFile();
             System.out.print("Saving: " + openFile.getName() + "...");
@@ -448,7 +410,7 @@ public class GTrainer extends javax.swing.JFrame {
                 encoder.close();
                 System.out.println(" successful.");
             } catch (FileNotFoundException ex) {
-                Logger.getLogger(GTrainer.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(GestureTrainerApp.class.getName()).log(Level.SEVERE, null, ex);
             }
         } else {
             System.out.println(" save command cancelled by user.");
@@ -457,10 +419,33 @@ public class GTrainer extends javax.swing.JFrame {
 
     private void gestureTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_gestureTableMouseClicked
         int row = gestureTable.getSelectedRow();
-        double[][] arr = (double[][]) gestureTable.getModel().getValueAt(row, 2);
-        lookupGesturePanel.setFunctions(new FunctionUtils.CFunction(onl, arr[0]), new FunctionUtils.CFunction(onl, arr[1]));
-        lookupGesturePanel.repaint();
+        TrainGesture g = (TrainGesture) gestureTable.getModel().getValueAt(row, 2);
+        gestureLookupPanel1.lookupGesture(g, trainedGestures);
     }//GEN-LAST:event_gestureTableMouseClicked
+
+    private void appendMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_appendMenuItemActionPerformed
+        fc.setFileFilter(xmlFilter);
+        if (openFile != null) {
+            fc.setCurrentDirectory(openFile);
+            fc.setSelectedFile(openFile);
+        }
+        int returnVal = fc.showOpenDialog(GestureTrainerApp.this);
+        if (returnVal == JFileChooser.APPROVE_OPTION) {
+            openFile = fc.getSelectedFile();
+            System.out.print("Appending database " + openFile.getName() + "...");
+            try {
+                XMLDecoder decoder = new XMLDecoder(new BufferedInputStream(new FileInputStream(openFile)));
+                trainedGestures.putAll( ((CoefficientClassifier)decoder.readObject()).getDatabase() );
+                resetTable();
+                decoder.close();
+                System.out.println(" successful.");
+            } catch (FileNotFoundException ex) {
+                Logger.getLogger(GestureTrainerApp.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } else {
+            System.out.println(" append command cancelled by user.");
+        }
+    }//GEN-LAST:event_appendMenuItemActionPerformed
 
     /**
     * @param args the command line arguments
@@ -468,30 +453,28 @@ public class GTrainer extends javax.swing.JFrame {
     public static void main(String args[]) {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new GTrainer().setVisible(true);
+                new GestureTrainerApp().setVisible(true);
             }
         });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton acceptButton;
-    private javax.swing.JLabel closestLabel;
+    private javax.swing.JMenuItem appendMenuItem;
     private javax.swing.JComboBox contextBox;
     private javax.swing.JLabel contextLabel;
     private javax.swing.JMenuItem exitMenuItem;
     private javax.swing.JMenu fileMenu;
+    private org.bm.firestorm.gestures.ui.GestureLookupPanel gestureLookupPanel1;
     private javax.swing.JTable gestureTable;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JToolBar jToolBar1;
-    private javax.swing.JLabel lookupDistLabel;
-    private org.bm.firestorm.gestures.ParametricPathPanel lookupGesturePanel;
-    private javax.swing.JLabel lookupStringLabel;
     private javax.swing.JPanel mainPanel;
     private javax.swing.JMenuItem openMenuItem;
     private org.bm.firestorm.gestures.PolyReader reader;
-    private org.bm.firestorm.gestures.ParametricPathPanel reflectPanel;
+    private org.bm.firestorm.gestures.ui.ParametricPathPanel reflectPanel;
     private javax.swing.JButton rejectButton;
     private javax.swing.JMenuItem saveAsMenuItem;
     private javax.swing.JMenuItem saveMenuItem;
@@ -499,7 +482,7 @@ public class GTrainer extends javax.swing.JFrame {
     private javax.swing.JTextField trainString;
     private javax.swing.JLabel trainStringLabel;
     private org.bm.firestorm.gestures.data.CoefficientClassifier trainedGestures;
-    private org.bm.firestorm.gestures.GPanel trainingPanel;
+    private org.bm.firestorm.gestures.ui.DrawPanel trainingPanel;
     // End of variables declaration//GEN-END:variables
 
 }

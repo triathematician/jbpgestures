@@ -3,7 +3,7 @@
  * Created on Oct 15, 2009
  */
 
-package org.bm.firestorm.gestures;
+package org.bm.firestorm.gestures.ui;
 
 import java.awt.Color;
 import java.awt.Graphics;
@@ -28,7 +28,7 @@ import javax.swing.event.MouseInputListener;
  * </p>
  * @author Elisha Peterson
  */
-public class GPanel extends JPanel implements ActionListener, MouseInputListener {
+public class DrawPanel extends JPanel implements ActionListener, MouseInputListener {
 
     //
     //
@@ -52,7 +52,7 @@ public class GPanel extends JPanel implements ActionListener, MouseInputListener
     //
 
     /** Construct with defaults. */
-    public GPanel() {
+    public DrawPanel() {
         setBackground(Color.WHITE);
         addMouseListener(this);
         addMouseMotionListener(this);

@@ -53,6 +53,10 @@ public class CoefficientClassifier<T> implements java.io.Serializable {
         return database.put(new TrainGesture(context, coeffs), value);
     }
 
+    public void putAll(TreeMap moreGestures) {
+        database.putAll(moreGestures);
+    }
+
     public boolean isEmpty() {
         return database.isEmpty();
     }
@@ -134,6 +138,20 @@ public class CoefficientClassifier<T> implements java.io.Serializable {
      */
     public TrainGesture closestTo(TrainGesture gesture) {
         return Collections.min(database.keySet(), gComparator(gesture));
+    }
+
+    /**
+     * Returns value in database most closely associated to the provided gesture.
+     * @param gesture gesture to classify
+     */
+    public TrainGesture[] nClosestTo(int n, TrainGesture gesture) {
+        TrainGesture[] sortedArray = sortDatabase(gesture).toArray(new TrainGesture[]{});
+        if (sortedArray.length < n)
+            return sortedArray;
+        TrainGesture[] result = new TrainGesture[n];
+        for (int i = 0; i < n; i++)
+            result[i] = sortedArray[i];
+        return result;
     }
 
     /**

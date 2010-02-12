@@ -17,9 +17,9 @@ import org.bm.firestorm.functionspace.VectorUtils;
 public class TrainGesture implements Comparable<TrainGesture>, java.io.Serializable {
     
     /** Stores context of the gesture. */
-    TrainContext context = TrainContext.NONE;
+    public TrainContext context = TrainContext.NONE;
     /** Stores arrays of the gesture. First array is x coords, second is y coords. */
-    double[][] arrays;
+    public double[][] arrays;
 
     /**
      * Construct without any information, without a training context
