@@ -1,0 +1,1 @@
+This package involves experimentation with user interfaces using Java.
